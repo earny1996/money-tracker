@@ -10,43 +10,61 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
-public class UserDAO implements DAO<User> {
+public class UserDAO implements DAO<UserDAO> {
 
-    private Authenticator authenticator = Authenticator.getInstance();
+    //private Authenticator authenticator = Authenticator.getInstance();
 
-    private List<User> users = new ArrayList<>();
+    //private List<User> users = new ArrayList<>();
 
+
+    @Column(name = "firstname")
     private String firstName;
+
+    @Column(name = "lastname")
     private String lastName;
+
+    @Column(name = "id")
+    @Id
     private String userId;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "email")
     private String email;
 
     private boolean isLoggedIn = false;
 
+    public UserDAO(String firstName, String lastName, String email, String password) {
+        this.setEmail(email);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setPassword(password);
+        this.setUserId();
+        this.persist();
+    }
+
     /* Getter */
-    @Column(name = "firstname")
     public String getFirstName(){
         return this.firstName;
     }
 
-    @Column(name = "lastname")
+
     public String getLastName() {
         return lastName;
     }
 
-    @Column(name = "email")
+
     public String getEmail() {
         return email;
     }
 
-    @Column(name = "id")
-    @Id
+
     public String getUserId() {
         return this.userId;
     }
 
-    @Column(name = "password")
+
     public String getPassword() {
         return password;
     }
@@ -77,10 +95,12 @@ public class UserDAO implements DAO<User> {
     }
 
     public void setPassword(String password){
+        Authenticator authenticator = Authenticator.getInstance();
         this.password = authenticator.generateHash(password);
     }
 
     public void login(String password){
+        Authenticator authenticator = Authenticator.getInstance();
         boolean isValid = authenticator.authenticate(password, this.password);
         this.setIsLoggedIn(isValid);
         if(!isValid){
@@ -99,44 +119,36 @@ public class UserDAO implements DAO<User> {
     }
 
     @Override
-    public Optional<User> getById(Long id) {
+    public Optional<UserDAO> getById(Long id) {
         return Optional.empty();
     }
 
     @Override
-    public List<User> getAll() {
-        return users;
+    public List<UserDAO> getAll() {
+        return null;
     }
 
     @Override
-    public void update(User user, String[] params) {
-        user.setFirstName(Objects.requireNonNull(
-                params[0], "Name cannot be null"));
-        user.setLastName(Objects.requireNonNull(
-                params[0], "Name cannot be null"));
-        user.setEmail(Objects.requireNonNull(
-                params[1], "Email cannot be null"));
+    public void update(UserDAO userDAO, String[] params) {
 
-        users.add(user);
     }
 
     @Override
-    public void delete(User user) {
-        users.remove(user);
+    public void delete(UserDAO userDAO) {
+
     }
 
     @Override
-    public void save(User user) {
-        users.add(user);
+    public void save(UserDAO userDAO) {
+
     }
 
     @Override
     public void persist() {
-        this.persist((User) this);
+        this.persist(this);
     }
 
-    @Override
-    public void persist(User user) {
+    public void persist(UserDAO user) {
         EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("money");
 
         EntityManager entitiyManager = emfactory.createEntityManager();

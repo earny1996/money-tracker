@@ -4,26 +4,30 @@ import com.earny1996.moneytracker.dao.UserDAO;
 
 import java.util.List;
 
-public class User extends UserDAO {
+public class User {
 
     private List<Account> accounts;
+    private UserDAO daoLayer;
 
     public User(String firstName, String lastName, String email, String password){
+        UserDAO userDao = new UserDAO(firstName, lastName, email, password);
+        daoLayer = userDao;
+    }
 
-        this.setEmail(email);
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setPassword(password);
-        this.setUserId();
-        this.persist(this);
+    public UserDAO getDaoLayer(){
+        return this.daoLayer;
     }
 
     @Override
     public String toString() {
+        /*
         return "User{" +
                 "userName='" + this.getFirstName() + " " + this.getLastName() + '\'' +
                 ", userId='" + this.getUserId() + '\'' +
                 ", password='" + this.getPassword() + '\'' +
                 '}';
+
+         */
+        return "";
     }
 }

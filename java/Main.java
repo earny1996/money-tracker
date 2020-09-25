@@ -7,7 +7,7 @@ public class Main{
     public static void main(String[] args){
         User user1 = new User("Rene", "Neumann", "rene1996neumann@web.de", "dla8_ia§k4");
         System.out.println(user1.toString());
-        user1.persist();
+        user1.getDaoLayer().persist();
 
         User user2 = new User("Jenny", "Test", "TEST", "Thermomix");
         System.out.println(user2.toString());

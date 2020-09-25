@@ -93,7 +93,7 @@ public class Transaction {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Transaction for ");
-        stringBuilder.append(transactionUser.getFirstName());
+        //stringBuilder.append(transactionUser.getFirstName());
         stringBuilder.append(":");
         stringBuilder.append("\n");
         stringBuilder.append(fromAccount.getName());
