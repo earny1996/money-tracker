@@ -1,6 +1,6 @@
-import com.earny1996.moneytracker.toname.Account;
-import com.earny1996.moneytracker.toname.Transaction;
-import com.earny1996.moneytracker.toname.User;
+import com.earny1996.moneytracker.beans.Account;
+import com.earny1996.moneytracker.beans.Transaction;
+import com.earny1996.moneytracker.beans.User;
 
 public class Main{
 

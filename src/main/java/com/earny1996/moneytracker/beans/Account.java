@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.toname;
+package com.earny1996.moneytracker.beans;
 
 import java.util.Currency;
 

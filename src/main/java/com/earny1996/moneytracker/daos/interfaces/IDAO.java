@@ -1,9 +1,9 @@
-package com.earny1996.moneytracker.dao;
+package com.earny1996.moneytracker.daos.interfaces;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface DAO<T> {
+public interface IDAO<T> {
 
     Optional<T> getById(Long id);
 
