@@ -1,14 +1,25 @@
 import com.earny1996.moneytracker.beans.Account;
 import com.earny1996.moneytracker.beans.Transaction;
 import com.earny1996.moneytracker.beans.User;
+import com.earny1996.moneytracker.daos.UserDAO;
 
 public class Main{
 
     public static void main(String[] args){
-        User user1 = new User("Rene", "Neumann", "rene1996neumann@web.de", "dla8_ia§k4");
-        System.out.println(user1.toString());
-        user1.getDaoLayer().persist();
+        User user1 = new User("Rene", "Neumann", "rene1996neumann@web.de", "dla8_ia§k4", true);
+        UserDAO userDAO = new UserDAO();
+        System.out.println("Persist User");
+        //userDAO.persist(user1);
+        User getUser = userDAO.getByEmail("rene1996neumann@web.de");
+        if(getUser == null){
+            System.out.println("getUser ist leider NULL");
+        } else {
+            userDAO.delete(getUser);
+        }
 
+       // user1.getDaoLayer().persist();
+
+        /*
         User user2 = new User("Jenny", "Test", "TEST", "Thermomix");
         System.out.println(user2.toString());
 
@@ -27,6 +38,8 @@ public class Main{
         System.out.println(bank.toString());
         System.out.println(kasse.toString());
         System.out.println("");
+
+        */
 
 
     }

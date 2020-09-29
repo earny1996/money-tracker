@@ -3,15 +3,13 @@ package com.earny1996.moneytracker.daos;
 import com.earny1996.moneytracker.beans.User;
 import com.earny1996.moneytracker.daos.database.DataBase;
 import com.earny1996.moneytracker.daos.interfaces.IUserDAO;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
+import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.*;
 import javax.persistence.*;
-import javax.xml.crypto.Data;
+import javax.transaction.Transactional;
 
-@Entity
-@Table(name = "user")
 public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
 
@@ -42,7 +40,40 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
     @Override
     public User getByEmail(String email) {
-        return null;
+        DataBase database = DataBase.getInstance();
+        EntityManagerFactory factory = database.createEntityManagerFactoryByUnitName("money");
+        EntityManager entityManager = factory.createEntityManager();
+
+        // prepare SQL statement
+        String query = "SELECT id, firstName, lastName, email, password FROM users WHERE email = :email";
+
+        // create sql query and add params
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("email", email);
+        User user = null;
+        try {
+
+            // execute sql query
+            List<Object[]> resultList = nativeQuery.getResultList();
+            for(Object[] objects : resultList){
+                BigInteger id = (BigInteger) objects[0];
+                String firstName = (String) objects[1];
+                String lastName = (String) objects[2];
+                String userEmail = (String) objects[3];
+                String password = (String) objects[4];
+
+                user = new User(id.longValue(), firstName, lastName, userEmail, password);
+            }
+
+
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        } finally {
+            // close entityManager & factory
+            entityManager.close();
+            factory.close();
+        }
+        return user;
     }
 
     @Override
@@ -61,8 +92,39 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     }
 
     @Override
+    @Transactional
     public void delete(User user) {
+        DataBase database = DataBase.getInstance();
+        EntityManagerFactory factory = database.createEntityManagerFactoryByUnitName("money");
+        EntityManager entityManager = factory.createEntityManager();
 
+        // prepare SQL statement
+        String query = "DELETE FROM users WHERE id = :id";
+
+        // create sql query and add params
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("id", user.getUserId());
+
+        // get transaction
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            // start transaction
+            transaction.begin();
+
+            // execute sql query
+            nativeQuery.executeUpdate();
+
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            transaction.rollback();
+        } finally {
+            // close entityManager & factory
+            entityManager.close();
+            factory.close();
+        }
     }
 
     @Override
@@ -71,12 +133,42 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     }
 
     @Override
-    public void persist() {
-
-    }
-
-    @Override
+    @Transactional
     public void persist(User user) {
+        DataBase database = DataBase.getInstance();
+        EntityManagerFactory factory = database.createEntityManagerFactoryByUnitName("money");
+        EntityManager entityManager = factory.createEntityManager();
 
+        // prepare SQL statement
+        String query = "INSERT INTO users(id, firstname, lastname, email, password) VALUES(:id, :firstname, :lastname, :email, :password);";
+
+        // create sql query and add params
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("id", user.getUserId());
+        nativeQuery.setParameter("firstname", user.getFirstName());
+        nativeQuery.setParameter("lastname", user.getLastName());
+        nativeQuery.setParameter("email", user.getEmail());
+        nativeQuery.setParameter("password", user.getPassword());
+
+        // get transaction
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            // start transaction
+            transaction.begin();
+
+            // execute sql query
+            nativeQuery.executeUpdate();
+
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            transaction.rollback();
+        } finally {
+            // close entityManager & factory
+            entityManager.close();
+            factory.close();
+        }
     }
 }

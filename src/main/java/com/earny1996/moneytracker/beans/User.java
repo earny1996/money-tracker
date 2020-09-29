@@ -3,9 +3,13 @@ package com.earny1996.moneytracker.beans;
 import com.earny1996.moneytracker.security.Authenticator;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.UUID;
+import javax.persistence.Table;
+import java.time.LocalDate;
 
+@Entity
+@Table(name = "users")
 public class User {
 
     @Column(name = "firstname")
@@ -16,7 +20,7 @@ public class User {
 
     @Column(name = "id")
     @Id
-    private String userId;
+    private Long userId;
 
     @Column(name = "password")
     private String password;
@@ -24,12 +28,25 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    public User(String firstName, String lastName, String email, String password){
+    public User(Long id, String firstName, String lastName, String email, String password){
         this.setEmail(email);
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setPassword(password);
-        this.setUserId();
+        this.setUserId(id);
+    }
+
+    public User(String firstName, String lastName, String email, String password, boolean encryptPassword){
+        this.setEmail(email);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        if(encryptPassword){
+            Authenticator authenticator = Authenticator.getInstance();
+            authenticator.generateHash(password);
+        }
+        this.setPassword(password);
+        Long id = generateUserId();
+        this.setUserId(id);
     }
 
     /* Getter */
@@ -48,7 +65,7 @@ public class User {
     }
 
 
-    public String getUserId() {
+    public Long getUserId() {
         return this.userId;
     }
 
@@ -81,19 +98,33 @@ public class User {
         this.email = email;
     }
 
-    public void setUserId(){
-        this.userId = generateUserId();
+    public void setUserId(Long id){
+        this.userId = id;
     }
 
     public void setPassword(String password){
-        Authenticator authenticator = Authenticator.getInstance();
-        this.password = authenticator.generateHash(password);
+        this.password = password;
     }
 
-    private String generateUserId(){
-        UUID uuid = UUID.randomUUID();
-        String id = uuid.toString();
-        return id;
+    private Long generateUserId(){
+        Long systemMillis = System.currentTimeMillis();
+        LocalDate localDate = LocalDate.now();
+        int year = localDate.getYear();
+        int month = localDate.getMonthValue();
+        int day = localDate.getDayOfMonth();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(year);
+        stringBuilder.append(month);
+        stringBuilder.append(day);
+        stringBuilder.append(systemMillis);
+
+        String idValue = stringBuilder.toString();
+        if(idValue.length() > 19){
+            idValue = idValue.substring(0,19);
+        }
+
+        return Long.valueOf(idValue);
     }
 
     @Override

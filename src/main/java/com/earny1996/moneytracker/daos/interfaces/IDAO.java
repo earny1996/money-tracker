@@ -15,7 +15,5 @@ public interface IDAO<T> {
 
     void save(T t);
 
-    void persist();
-
     void persist(T t);
 }
