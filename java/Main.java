@@ -3,19 +3,30 @@ import com.earny1996.moneytracker.beans.Transaction;
 import com.earny1996.moneytracker.beans.User;
 import com.earny1996.moneytracker.daos.UserDAO;
 
+import java.util.List;
+
 public class Main{
 
     public static void main(String[] args){
-        User user1 = new User("Rene", "Neumann", "rene1996neumann@web.de", "dla8_ia§k4", true);
-        UserDAO userDAO = new UserDAO();
+        User user = new User("Rene", "Neumann", "rene1996neumann@web.de", "dla8_ia§k4", true);
+        System.out.println(user.toString());
+        UserDAO userDAO = UserDAO.getInstance();
         System.out.println("Persist User");
-        //userDAO.persist(user1);
+        userDAO.persist(user);
         User getUser = userDAO.getByEmail("rene1996neumann@web.de");
         if(getUser == null){
             System.out.println("getUser ist leider NULL");
         } else {
-            userDAO.delete(getUser);
+            System.out.println(getUser.toString());
         }
+
+        User user2 = new User("Benjamin", "Fox", "foxiBenji@web.de", "123", true);
+        System.out.println(user2.toString());
+
+        userDAO.persist(user2);
+
+        List<User> currentUsers = userDAO.getAll();
+        currentUsers.forEach(u -> System.out.println(u.toString()));
 
        // user1.getDaoLayer().persist();
 

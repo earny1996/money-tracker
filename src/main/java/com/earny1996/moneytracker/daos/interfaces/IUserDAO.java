@@ -11,4 +11,6 @@ public interface IUserDAO extends IDAO<User>{
     List<User> getByLastName(String lastName);
 
     User getByEmail(String email);
+
+    void deleteById(Long id);
 }

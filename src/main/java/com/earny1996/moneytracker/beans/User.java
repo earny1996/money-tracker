@@ -42,7 +42,7 @@ public class User {
         this.setLastName(lastName);
         if(encryptPassword){
             Authenticator authenticator = Authenticator.getInstance();
-            authenticator.generateHash(password);
+            password = authenticator.generateHash(password);
         }
         this.setPassword(password);
         Long id = generateUserId();
@@ -129,14 +129,26 @@ public class User {
 
     @Override
     public String toString() {
-        /*
-        return "User{" +
-                "userName='" + this.getFirstName() + " " + this.getLastName() + '\'' +
-                ", userId='" + this.getUserId() + '\'' +
-                ", password='" + this.getPassword() + '\'' +
-                '}';
+        StringBuilder toStringBuilder = new StringBuilder();
+        toStringBuilder.append("##################################################");
+        toStringBuilder.append("\n");
+        toStringBuilder.append("Vorname: ");
+        toStringBuilder.append(this.getFirstName());
+        toStringBuilder.append("\n");
+        toStringBuilder.append("Nachname: ");
+        toStringBuilder.append(this.getLastName());
+        toStringBuilder.append("\n");
+        toStringBuilder.append("Email: ");
+        toStringBuilder.append(this.getEmail());
+        toStringBuilder.append("\n");
+        toStringBuilder.append("ID: ");
+        toStringBuilder.append(this.getUserId());
+        toStringBuilder.append("\n");
+        toStringBuilder.append("PasswortHash: ");
+        toStringBuilder.append(this.getPassword());
+        toStringBuilder.append("\n");
+        toStringBuilder.append("##################################################");
 
-         */
-        return "";
+       return toStringBuilder.toString();
     }
 }
