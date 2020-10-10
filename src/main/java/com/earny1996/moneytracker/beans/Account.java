@@ -1,21 +1,50 @@
 package com.earny1996.moneytracker.beans;
 
-import java.util.Currency;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-public class Account {
+import com.earny1996.moneytracker.daos.UserDAO;
 
+@Entity
+@Table(name = "accounts")
+public class Account  extends AbstractBean{
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
-    private double balance;
-    private Currency currency;
 
-    public Account(String name, String currencyCode){
-        this(name, 0, currencyCode);
+    @Column(name = "balance")
+    private double balance;
+
+    @Column(name = "currencycode")
+    private String currencyCode;
+
+    @ManyToOne
+    @JoinColumn(name="fkusers", nullable=false)
+    private User user;
+
+    public Account(String name, double balance, String currencyCode, User user){
+        this(null, name, balance, currencyCode, user);
     }
 
-    public Account(String name, double startbalance, String currencyCode){
-        this.setBalance(startbalance);
+    public Account(Long id, String name, double balance, String currencyCode, User user){
+        this.setBalance(balance);
         this.setName(name);
         this.setCurrency(currencyCode);
+        this.setUser(user);
+
+        if(id == null){
+            id = generateId();
+        }
+
+        this.setId(id);
     }
 
     public void subtract(double amount){
@@ -24,6 +53,10 @@ public class Account {
 
     public void add(double amount){
         this.balance += amount;
+    }
+
+    public Long getId(){
+        return this.id;
     }
 
     public String getName(){
@@ -38,12 +71,16 @@ public class Account {
         }
     }
 
-    public Currency getCurrency() {
-        return currency;
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public User getUser(){
+        return this.user;
     }
 
     private void setCurrency(String currencyCode){
-        this.currency = Currency.getInstance(currencyCode);
+        this.currencyCode = currencyCode;
     }
 
     public double getBalance(){
@@ -54,12 +91,20 @@ public class Account {
         this.balance = amount;
     }
 
+    private void setUser(User user){
+        this.user = user;
+    }
+
+    private void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "name='" + name + '\'' +
                 ", balance=" + balance +
-                ", currency=" + currency +
+                ", currency=" + currencyCode +
                 '}';
     }
 }

@@ -99,12 +99,12 @@ public class Transaction {
         stringBuilder.append(fromAccount.getName());
         stringBuilder.append(" ");
         stringBuilder.append(this.amount);
-        stringBuilder.append(fromAccount.getCurrency().getSymbol());
+       // stringBuilder.append(fromAccount.getCurrency().getSymbol());
         stringBuilder.append(" an ");
         stringBuilder.append(toAccount.getName());
         stringBuilder.append(" ");
         stringBuilder.append(amount);
-        stringBuilder.append(toAccount.getCurrency().getSymbol());
+        //stringBuilder.append(toAccount.getCurrency().getSymbol());
 
         return stringBuilder.toString();
     }

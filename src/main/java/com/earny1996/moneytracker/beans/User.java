@@ -2,15 +2,17 @@ package com.earny1996.moneytracker.beans;
 
 import com.earny1996.moneytracker.security.Authenticator;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends AbstractBean{
 
     @Column(name = "firstname")
     private String firstName;
@@ -27,6 +29,9 @@ public class User {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy="user")
+    private Set<Account> accounts;
 
     public User(Long id, String firstName, String lastName, String email, String password){
         this.setEmail(email);
@@ -45,8 +50,7 @@ public class User {
             password = authenticator.generateHash(password);
         }
         this.setPassword(password);
-        Long id = generateUserId();
-        this.setUserId(id);
+        this.setUserId(generateId());
     }
 
     /* Getter */
@@ -104,27 +108,6 @@ public class User {
 
     public void setPassword(String password){
         this.password = password;
-    }
-
-    private Long generateUserId(){
-        Long systemMillis = System.currentTimeMillis();
-        LocalDate localDate = LocalDate.now();
-        int year = localDate.getYear();
-        int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(year);
-        stringBuilder.append(month);
-        stringBuilder.append(day);
-        stringBuilder.append(systemMillis);
-
-        String idValue = stringBuilder.toString();
-        if(idValue.length() > 19){
-            idValue = idValue.substring(0,19);
-        }
-
-        return Long.valueOf(idValue);
     }
 
     @Override

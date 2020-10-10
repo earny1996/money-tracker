@@ -6,16 +6,11 @@ import com.earny1996.moneytracker.daos.interfaces.IUserDAO;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 
 public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
-    @PersistenceContext
-    private DataBase dataBase;
-    private EntityManagerFactory factory;
-    private EntityManager entityManager;
     private static UserDAO me;
 
     /**
@@ -52,6 +47,8 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
         // create sql query and add params
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("id", id);
+
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
         List<User> userList = getUserByResultList(resultList);
 
@@ -80,6 +77,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("firstname", firstName);
 
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
         List<User> userList = getUserByResultList(resultList);
 
@@ -123,6 +121,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("lastname", lastName);
 
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
         List<User> userList = getUserByResultList(resultList);
 
@@ -145,6 +144,8 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
         // create sql query and add params
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("email", email);
+
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
         List<User> userList = getUserByResultList(resultList);
 
@@ -168,39 +169,11 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
         Query nativeQuery = entityManager.createNativeQuery(query);
 
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
         List<User> userList = getUserByResultList(resultList);
 
         return userList;
-    }
-
-    /**
-     * Updates the database fields of a user with the given id and
-     *
-     * @param updateParams
-     * @param id
-     */
-    @Override
-    @Transactional
-    public void update(Map<String, String> updateParams, Long id) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("UPDATE users SET ");
-
-        AtomicInteger counter = new AtomicInteger();
-        updateParams.forEach((key, value) -> {
-            queryBuilder.append(key);
-            queryBuilder.append(" = ");
-            queryBuilder.append(value);
-
-            counter.addAndGet(1);
-            if(counter.get() < updateParams.size()){
-                queryBuilder.append(", ");
-            }
-        });
-
-        queryBuilder.append(" WHERE id = ");
-        queryBuilder.append(id);
-        queryBuilder.append(";");
     }
 
     /**
@@ -217,7 +190,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
         updateParams.put("password", user.getPassword());
 
         // call update Method
-        update(updateParams, user.getUserId());
+        update("users", updateParams, user.getUserId());
     }
 
     /**
