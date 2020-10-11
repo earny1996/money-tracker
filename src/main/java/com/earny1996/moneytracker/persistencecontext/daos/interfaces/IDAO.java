@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.daos.interfaces;
+package com.earny1996.moneytracker.persistencecontext.daos.interfaces;
 
 import java.util.List;
 import java.util.Map;

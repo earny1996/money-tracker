@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.daos;
+package com.earny1996.moneytracker.persistencecontext.daos;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,19 +10,25 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import com.earny1996.moneytracker.beans.Account;
-import com.earny1996.moneytracker.beans.User;
-import com.earny1996.moneytracker.daos.database.DataBase;
-import com.earny1996.moneytracker.daos.interfaces.IAccountDAO;
+import com.earny1996.moneytracker.persistencecontext.beans.Account;
+import com.earny1996.moneytracker.persistencecontext.beans.User;
+import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
+import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IAccountDAO;
 
 public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
+
+    /**
+     * READ
+     * https://stackoverflow.com/questions/19637344/when-to-use-gateway-design-pattern
+     * https://stackoverflow.com/questions/2810020/need-some-clarification-with-patterns-dao-x-gateway
+     */
 
     private static AccountDAO me;
 
     /**
-     * private Constructor for Singleton use
+     * protected Constructor for Singleton use
      */
-    private AccountDAO(){
+    protected AccountDAO(){
         dataBase = DataBase.getInstance();
         factory = dataBase.createEntityManagerFactoryByUnitName("money");
         entityManager = factory.createEntityManager();
@@ -174,21 +180,47 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
-        List<Account> userList = getAccountByResultList(resultList);
+        List<Account> accountList = getAccountByResultList(resultList);
 
-        if(userList.size() > 1){
-            throw new RuntimeException("More than 1 User for id '" + accountId + "' found.");
-        } else if(userList.isEmpty()){
+        if(accountList.size() > 1){
+            throw new RuntimeException("More than 1 Account for id '" + accountId + "' found.");
+        } else if(accountList.isEmpty()){
             return null;
         }
 
-        return userList.get(0);
+        return accountList.get(0);
     }
 
     @Override
     public List<Account> getByNameAndUser(String accountName, User user) {
-        // TODO Auto-generated method stub
-        return null;
+        // prepare SQL statement
+        String query = "SELECT id, name, balance, currencycode, fkusers FROM accounts WHERE name = :name AND fkusers = :userid";
+
+        // create sql query and add params
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("name", accountName);
+        nativeQuery.setParameter("userid", user.getUserId());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Account> accountList = getAccountByResultList(resultList);
+
+        return accountList;
+    }
+
+    public List<Account> getByUser(User user) {
+        // prepare SQL statement
+        String query = "SELECT id, name, balance, currencycode, fkusers FROM accounts WHERE fkusers = :userid";
+
+        // create sql query and add params
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("userid", user.getUserId());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Account> accountList = getAccountByResultList(resultList);
+
+        return accountList;
     }
 
     /**
@@ -214,6 +246,9 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
             }
             
             Account account = new Account(id.longValue(), name, balance, currencyCode, user);
+            if(user != null){
+                user.addAccount(account);
+            }
             accountList.add(account);
         }
         return accountList;

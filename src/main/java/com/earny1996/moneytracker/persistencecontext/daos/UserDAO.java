@@ -1,8 +1,8 @@
-package com.earny1996.moneytracker.daos;
+package com.earny1996.moneytracker.persistencecontext.daos;
 
-import com.earny1996.moneytracker.beans.User;
-import com.earny1996.moneytracker.daos.database.DataBase;
-import com.earny1996.moneytracker.daos.interfaces.IUserDAO;
+import com.earny1996.moneytracker.persistencecontext.beans.User;
+import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
+import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IUserDAO;
 
 import java.math.BigInteger;
 import java.util.*;

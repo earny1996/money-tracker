@@ -1,6 +1,6 @@
-package com.earny1996.moneytracker.daos.interfaces;
+package com.earny1996.moneytracker.persistencecontext.daos.interfaces;
 
-import com.earny1996.moneytracker.beans.User;
+import com.earny1996.moneytracker.persistencecontext.beans.User;
 
 import java.util.List;
 

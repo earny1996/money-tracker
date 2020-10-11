@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.beans;
+package com.earny1996.moneytracker.persistencecontext.beans;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,8 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.earny1996.moneytracker.daos.UserDAO;
 
 @Entity
 @Table(name = "accounts")
@@ -47,14 +45,6 @@ public class Account  extends AbstractBean{
         this.setId(id);
     }
 
-    public void subtract(double amount){
-        this.balance -= amount;
-    }
-
-    public void add(double amount){
-        this.balance += amount;
-    }
-
     public Long getId(){
         return this.id;
     }
@@ -87,7 +77,7 @@ public class Account  extends AbstractBean{
         return this.balance;
     }
 
-    private void setBalance(double amount){
+    public void setBalance(double amount){
         this.balance = amount;
     }
 
@@ -97,14 +87,5 @@ public class Account  extends AbstractBean{
 
     private void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "name='" + name + '\'' +
-                ", balance=" + balance +
-                ", currency=" + currencyCode +
-                '}';
     }
 }

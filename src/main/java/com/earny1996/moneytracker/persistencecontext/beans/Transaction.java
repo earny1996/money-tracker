@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.beans;
+package com.earny1996.moneytracker.persistencecontext.beans;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

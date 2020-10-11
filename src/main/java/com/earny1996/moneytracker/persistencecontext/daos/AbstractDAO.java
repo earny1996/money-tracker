@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.daos;
+package com.earny1996.moneytracker.persistencecontext.daos;
 
 import java.util.Map;
 
@@ -6,8 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
-import com.earny1996.moneytracker.daos.database.DataBase;
-import com.earny1996.moneytracker.daos.interfaces.IDAO;
+import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
+import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IDAO;
 
 
 import javax.transaction.Transactional;

@@ -1,8 +1,5 @@
-package com.earny1996.moneytracker.daos.database;
+package com.earny1996.moneytracker.persistencecontext.daos.database;
 
-import com.earny1996.moneytracker.beans.User;
-
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
