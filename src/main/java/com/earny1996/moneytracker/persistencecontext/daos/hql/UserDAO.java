@@ -1,7 +1,6 @@
-package com.earny1996.moneytracker.persistencecontext.daos;
+package com.earny1996.moneytracker.persistencecontext.daos.hql;
 
 import com.earny1996.moneytracker.persistencecontext.beans.User;
-import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IUserDAO;
 
 import java.math.BigInteger;
@@ -17,9 +16,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
      * private Constructor for Singleton use
      */
     private UserDAO(){
-        dataBase = DataBase.getInstance();
-        factory = dataBase.createEntityManagerFactoryByUnitName("money");
-        entityManager = factory.createEntityManager();
+        super();
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.persistencecontext.daos;
+package com.earny1996.moneytracker.persistencecontext.daos.hql;
 
 import java.util.Map;
 
@@ -21,6 +21,12 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
 	protected DataBase dataBase;
     protected EntityManagerFactory factory;
     protected EntityManager entityManager;
+
+    public AbstractDAO(){
+        dataBase = DataBase.getInstance();
+        factory = dataBase.createEntityManagerFactoryByUnitName("money");
+        entityManager = factory.createEntityManager();
+    }
 
     /**
      * Updates the database fields of a given table by the given id and params

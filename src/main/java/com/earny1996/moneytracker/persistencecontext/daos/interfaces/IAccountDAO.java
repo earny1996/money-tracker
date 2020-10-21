@@ -10,5 +10,7 @@ public interface IAccountDAO extends IDAO<Account> {
     Account getById(Long accountId);
 
     List<Account> getByNameAndUser(String accountName, User user);
+
+    List<Account> getByUserId(Long userId);
     
 }

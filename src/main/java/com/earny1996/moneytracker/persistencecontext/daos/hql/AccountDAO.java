@@ -1,4 +1,4 @@
-package com.earny1996.moneytracker.persistencecontext.daos;
+package com.earny1996.moneytracker.persistencecontext.daos.hql;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
-import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IAccountDAO;
 
 public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
@@ -28,10 +27,8 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     /**
      * protected Constructor for Singleton use
      */
-    protected AccountDAO(){
-        dataBase = DataBase.getInstance();
-        factory = dataBase.createEntityManagerFactoryByUnitName("money");
-        entityManager = factory.createEntityManager();
+    private AccountDAO(){
+        super();
     }
 
     /**
@@ -208,13 +205,14 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
         return accountList;
     }
 
-    public List<Account> getByUser(User user) {
+    @Override
+    public List<Account> getByUserId(Long userId) {
         // prepare SQL statement
         String query = "SELECT id, name, balance, currencycode, fkusers FROM accounts WHERE fkusers = :userid";
 
         // create sql query and add params
         Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userid", user.getUserId());
+        nativeQuery.setParameter("userid", userId);
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();

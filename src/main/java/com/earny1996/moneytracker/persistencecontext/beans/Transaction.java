@@ -24,8 +24,6 @@ public class Transaction {
         this.setTransactionId();
         this.setTransactionDate(transactionDate);
 
-        fromAccount.subtract(amount);
-        toAccount.add(amount);
     }
 
     public Account getFromAccount() {

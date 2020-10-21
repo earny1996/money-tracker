@@ -2,29 +2,29 @@ package com.earny1996.moneytracker.test;
 
 import java.util.List;
 
-import com.earny1996.moneytracker.gateways.AccountGateway;
+import com.earny1996.moneytracker.controller.AccountController;
+import com.earny1996.moneytracker.controller.UserController;
+import com.earny1996.moneytracker.controller.interfaces.IAccountController;
+import com.earny1996.moneytracker.controller.interfaces.IUserController;
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
-import com.earny1996.moneytracker.persistencecontext.daos.AccountDAO;
-import com.earny1996.moneytracker.persistencecontext.daos.UserDAO;
 
 public class Main{
 
     public static void main(String[] args){
-        UserDAO userDao = UserDAO.getInstance();
-        User user = userDao.getByEmail("rene1996neumann@web.de");
+        IUserController userController = new UserController();
+        IAccountController accountController = new AccountController();
 
-        AccountDAO accountGateway = AccountGateway.getInstance();
-        
+        User user = userController.getByEmail("rene1996neumann@web.de");
 
-        List<Account> accounts = accountGateway.getAll();
+        List<Account> accounts = accountController.getUserAccounts(user);
         for(Account account : accounts){
             System.out.println(account.toString());
         }
 
-        Account kasse = accountGateway.getByNameAndUser("Kasse", user).get(0);
+        Account kasse = accountController.getAccountsByNameAndUser("Kasse", user).get(0);
 
-        accountGateway.add(kasse, 50);
-        accountGateway.save(kasse);
+        accountController.add(kasse, 50);
+        accountController.saveAccount(kasse);
     }
 }
