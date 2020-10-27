@@ -3,6 +3,8 @@ package com.earny1996.moneytracker.persistencecontext.daos.hql;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IUserDAO;
 
+import org.hibernate.Session;
+
 import java.math.BigInteger;
 import java.util.*;
 import javax.persistence.*;
@@ -38,24 +40,11 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     @Override
     @Transactional
     public User getById(Long id) {
-        // prepare SQL statement
-        String query = "SELECT id, firstName, lastName, email, password FROM users WHERE id = :id";
+        Session session = dataBase.getCurrentSession();
+        User user = session.find(User.class, id);
+        //session.close();
 
-        // create sql query and add params
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("id", id);
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultList = nativeQuery.getResultList();
-        List<User> userList = getUserByResultList(resultList);
-
-        if(userList.size() > 1){
-            throw new RuntimeException("More than 1 User for id '" + id + "' found.");
-        } else if(userList.isEmpty()){
-            return null;
-        }
-
-        return userList.get(0);
+        return user;
     }
 
 
@@ -76,6 +65,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
+         
         List<User> userList = getUserByResultList(resultList);
 
         return userList;
@@ -113,13 +103,14 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     @Override
     @Transactional
     public List<User> getByLastName(String lastName) {
-        String query = "SELECT id, firstname, lastname, email, password from users WHERE firstname LIKE :lastname;";
+        String query = "SELECT id, firstname, lastname, email, password from users as u WHERE firstname LIKE :lastname INNER JOIN accounts ON u.id = accounts.fkusers";
 
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("lastname", lastName);
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
+         
         List<User> userList = getUserByResultList(resultList);
 
         return userList;
@@ -144,6 +135,7 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
+         
         List<User> userList = getUserByResultList(resultList);
 
         if(userList.size() > 1){
@@ -168,26 +160,10 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
 
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = nativeQuery.getResultList();
+         
         List<User> userList = getUserByResultList(resultList);
 
         return userList;
-    }
-
-    /**
-     * Builds a parameter Map of fields to update
-     * for given user
-     * @param user
-     */
-    @Override
-    public void save(User user) {
-        Map<String, String> updateParams = new HashMap<>();
-        updateParams.put("firstname", user.getFirstName());
-        updateParams.put("lastname", user.getLastName());
-        updateParams.put("email", user.getEmail());
-        updateParams.put("password", user.getPassword());
-
-        // call update Method
-        update("users", updateParams, user.getUserId());
     }
 
     /**
@@ -197,7 +173,8 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     @Override
     @Transactional
     public void delete(User user) {
-        this.deleteById(user.getUserId());
+        entityManager.remove(user);
+         
     }
 
     /**
@@ -231,50 +208,24 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
             System.out.println(e.getMessage());
             transaction.rollback();
         } finally {
-            // close entityManager & factory
-            //entityManager.close();
-            //factory.close();
+             
         }
     }
 
     /**
-     * Inserts a new Users into the database
+     * Inserts a new Users into the database or updates an existing one
      * @param user
      */
     @Override
     @Transactional
     public void persist(User user) {
-
-        // prepare SQL statement
-        String query = "INSERT INTO users(id, firstname, lastname, email, password) VALUES(:id, :firstname, :lastname, :email, :password);";
-
-        // create sql query and add params
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("id", user.getUserId());
-        nativeQuery.setParameter("firstname", user.getFirstName());
-        nativeQuery.setParameter("lastname", user.getLastName());
-        nativeQuery.setParameter("email", user.getEmail());
-        nativeQuery.setParameter("password", user.getPassword());
-
         // get transaction
-        EntityTransaction transaction = entityManager.getTransaction();
+        entityManager.persist(user);
+         
+    }
 
-        try {
-            // start transaction
-            transaction.begin();
-
-            // execute sql query
-            nativeQuery.executeUpdate();
-
-            // commit transaction
-            transaction.commit();
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            transaction.rollback();
-        } finally {
-            // close entityManager & factory
-            //entityManager.close();
-            //factory.close();
-        }
+    @Override
+    public void update(User t) {
+        entityManager.merge(t);
     }
 }

@@ -10,6 +10,12 @@ import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IAccountDAO
 
 public class AccountController implements IAccountController{
 
+    private IAccountDAO accountDAO;
+
+    public AccountController(){
+        this.accountDAO = AccountDAO.getInstance();
+    }
+
     @Override
     public void subtract(Account account, double amount) {
         amount = account.getBalance() - amount;
@@ -24,7 +30,6 @@ public class AccountController implements IAccountController{
 
     @Override
     public List<Account> getUserAccounts(User user) {
-        IAccountDAO accountDAO = AccountDAO.getInstance();
         List<Account> accounts = accountDAO.getByUserId(user.getUserId());
 
         return accounts;
@@ -32,7 +37,6 @@ public class AccountController implements IAccountController{
 
     @Override
     public List<Account> getAccountsByNameAndUser(String accountName, User user){
-        IAccountDAO accountDAO = AccountDAO.getInstance();
         List<Account> accounts = accountDAO.getByNameAndUser(accountName, user);
 
         return accounts;
@@ -40,22 +44,24 @@ public class AccountController implements IAccountController{
 
     @Override
     public List<Account> getAllAccounts(){
-        IAccountDAO accountDAO = AccountDAO.getInstance();
         List<Account> accounts = accountDAO.getAll();
 
         return accounts;
     }
 
     @Override
-    public void saveAccount(Account account){
-        IAccountDAO accountDAO = AccountDAO.getInstance();
-        accountDAO.save(account);
+    public void createAccount(Account account){
+        accountDAO.persist(account);
     }
 
     @Override
     public void deleteAccount(Account account){
-        IAccountDAO accountDAO = AccountDAO.getInstance();
         accountDAO.delete(account);
+    }
+
+    @Override
+    public void updateAccount(Account account) {
+        accountDAO.update(account);
     }
     
 }

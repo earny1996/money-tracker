@@ -5,6 +5,9 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import javassist.bytecode.analysis.Analyzer;
 
 public abstract class AbstractBean {
 
@@ -47,6 +50,10 @@ public abstract class AbstractBean {
                     mappedByAnnotation = true;
                     break;
                 }
+            }
+
+            if(field.getName().equals("serialVersionUID")){
+                continue;
             }
 
             if(!mappedByAnnotation){

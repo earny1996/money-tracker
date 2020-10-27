@@ -2,19 +2,27 @@ package com.earny1996.moneytracker.persistencecontext.beans;
 
 import com.earny1996.moneytracker.security.Authenticator;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User extends AbstractBean {
+public class User extends AbstractBean implements Serializable{
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2L;
 
     @Column(name = "firstname")
     private String firstName;
@@ -32,8 +40,12 @@ public class User extends AbstractBean {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="user", cascade={CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<Account>();
+
+    public User(){
+        
+    }
 
     public User(Long id, String firstName, String lastName, String email, String password) {
         this.setEmail(email);
@@ -74,6 +86,10 @@ public class User extends AbstractBean {
 
     public String getPassword() {
         return password;
+    }
+
+    public Set<Account> getAccounts() {
+        return accounts;
     }
 
     public void addAccount(Account account){

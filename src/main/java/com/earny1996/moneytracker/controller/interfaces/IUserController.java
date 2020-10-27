@@ -19,5 +19,13 @@ public interface IUserController {
     public User getByEmail(String email);
 
     public User getById(Long id);
+
+    public void changeFirstname(String firstName, User user);
+
+    public void changeLastname(String lastName, User user);
+
+    public void changeEmail(String email, User user);
+
+    public void changePassword(String password, User user);
     
 }

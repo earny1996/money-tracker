@@ -23,7 +23,7 @@ public class UserController implements IUserController {
 
     @Override
     public void saveUser(User user){
-        userDAO.save(user);
+        userDAO.persist(user);
     }
 
     @Override
@@ -49,6 +49,26 @@ public class UserController implements IUserController {
     @Override
     public User getById(Long id){
         return userDAO.getById(id);
+    }
+
+    @Override
+    public void changeFirstname(String firstName, User user) {
+        user.setFirstName(firstName);
+    }
+
+    @Override
+    public void changeLastname(String lastName, User user) {
+        user.setLastName(lastName);
+    }
+
+    @Override
+    public void changeEmail(String email, User user) {
+       user.setEmail(email);
+    }
+
+    @Override
+    public void changePassword(String password, User user) {
+        user.setPassword(password);
     }
     
 }

@@ -1,15 +1,25 @@
 package com.earny1996.moneytracker.persistencecontext.beans;
 
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "accounts")
-public class Account  extends AbstractBean{
+public class Account  extends AbstractBean implements Serializable{
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "id")
@@ -24,9 +34,13 @@ public class Account  extends AbstractBean{
     @Column(name = "currencycode")
     private String currencyCode;
 
-    @ManyToOne
-    @JoinColumn(name="fkusers", nullable=false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.ALL}, targetEntity = User.class)
+    @JoinColumn(name = "fkusers")
     private User user;
+
+    public Account(){
+        
+    }
 
     public Account(String name, double balance, String currencyCode, User user){
         this(null, name, balance, currencyCode, user);

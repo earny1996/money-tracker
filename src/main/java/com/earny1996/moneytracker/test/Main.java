@@ -15,16 +15,15 @@ public class Main{
         IUserController userController = new UserController();
         IAccountController accountController = new AccountController();
 
-        User user = userController.getByEmail("rene1996neumann@web.de");
-
-        List<Account> accounts = accountController.getUserAccounts(user);
-        for(Account account : accounts){
-            System.out.println(account.toString());
-        }
+        User user = userController.getById(2020109160226421096L);
+        user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
 
         Account kasse = accountController.getAccountsByNameAndUser("Kasse", user).get(0);
 
         accountController.add(kasse, 50);
-        accountController.saveAccount(kasse);
+        accountController.updateAccount(kasse);
+        System.out.println(user.getAccounts().size());
+        
+        user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
     }
 }
