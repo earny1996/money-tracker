@@ -11,7 +11,7 @@ import javassist.bytecode.analysis.Analyzer;
 
 public abstract class AbstractBean {
 
-    public Long generateId() {
+    public static Long generateId() {
         Long systemMillis = System.currentTimeMillis();
         LocalDate localDate = LocalDate.now();
         int year = localDate.getYear();
@@ -22,7 +22,10 @@ public abstract class AbstractBean {
         stringBuilder.append(year);
         stringBuilder.append(month);
         stringBuilder.append(day);
-        stringBuilder.append(systemMillis);
+
+        String systemMillisString = systemMillis.toString();
+        systemMillisString.substring(systemMillisString.length() - 12, systemMillisString.length() - 1);
+        stringBuilder.append(systemMillisString);
 
         String idValue = stringBuilder.toString();
         if (idValue.length() > 19) {

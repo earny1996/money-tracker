@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
+import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IAccountDAO;
 
 import org.hibernate.Session;
@@ -70,8 +71,9 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     @Transactional
     public void persist(Account account) {
+        entityManager.getTransaction().begin();
         entityManager.persist(account);
-        dataBase.getCurrentSession().flush();
+        entityManager.getTransaction().commit();
     }
 
     /**
@@ -81,7 +83,9 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     @Transactional
     public void delete(Account account) {
+        entityManager.getTransaction().begin();
         entityManager.remove(account);
+        entityManager.getTransaction().commit();
     }
 
     /**

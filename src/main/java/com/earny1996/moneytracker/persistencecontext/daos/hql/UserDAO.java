@@ -173,7 +173,9 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     @Override
     @Transactional
     public void delete(User user) {
+        entityManager.getTransaction().begin();
         entityManager.remove(user);
+        entityManager.getTransaction().commit();
          
     }
 
@@ -220,12 +222,15 @@ public class UserDAO extends AbstractDAO<User> implements IUserDAO {
     @Transactional
     public void persist(User user) {
         // get transaction
+        entityManager.getTransaction().begin();
         entityManager.persist(user);
-         
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public void update(User t) {
+        entityManager.getTransaction().begin();
         entityManager.merge(t);
+        entityManager.getTransaction().commit();
     }
 }

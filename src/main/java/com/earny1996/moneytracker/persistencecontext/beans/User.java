@@ -6,14 +6,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -30,8 +23,10 @@ public class User extends AbstractBean implements Serializable{
     @Column(name = "lastname")
     private String lastName;
 
-    @Column(name = "id")
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserIdGenerator")
+    @SequenceGenerator(name = "UserIdGenerator", initialValue = 1)
     private Long userId;
 
     @Column(name = "password")
@@ -40,7 +35,7 @@ public class User extends AbstractBean implements Serializable{
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy="user", cascade={CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<Account>();
 
     public User(){
@@ -52,7 +47,7 @@ public class User extends AbstractBean implements Serializable{
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setPassword(password);
-        this.setUserId(id);
+        //this.setUserId(id);
     }
 
     public User(String firstName, String lastName, String email, String password, boolean encryptPassword) {
@@ -64,7 +59,7 @@ public class User extends AbstractBean implements Serializable{
             password = authenticator.generateHash(password);
         }
         this.setPassword(password);
-        this.setUserId(generateId());
+        //this.setUserId(generateId());
     }
 
     /* Getter */

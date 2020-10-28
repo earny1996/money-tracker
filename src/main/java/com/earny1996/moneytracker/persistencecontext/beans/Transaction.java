@@ -1,16 +1,18 @@
 package com.earny1996.moneytracker.persistencecontext.beans;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-public class Transaction {
+public class Transaction extends AbstractBean{
 
     private User transactionUser;
     private Account fromAccount;
     private Account toAccount;
-    private String transactionId;
+    private Long transactionId;
     private LocalDateTime transactionDate;
+    private LocalDateTime createdDate;
     private double amount;
+
+    /* Constructors */
 
     public Transaction(User transactionUser, Account from, Account to, double amount){
         this(transactionUser, from, to, amount, null);
@@ -21,24 +23,52 @@ public class Transaction {
         this.setFromAccount(from);
         this.setToAccount(to);
         this.setAmount(amount);
-        this.setTransactionId();
         this.setTransactionDate(transactionDate);
-
     }
+
+    public Transaction(Long id, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
+        this.setTransactionId(id);
+        this.setTransactionUser(transactionUser);
+        this.setFromAccount(from);
+        this.setToAccount(to);
+        this.setAmount(amount);
+        this.setTransactionDate(transactionDate);
+    }
+
+    /* Getter */
 
     public Account getFromAccount() {
         return fromAccount;
     }
 
-    private void setFromAccount(Account fromAccount){
-        if(fromAccount == null){
-            throw new RuntimeException("FromAccount is invalid");
-        }
-        this.fromAccount = fromAccount;
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
     }
 
     public Account getToAccount() {
         return toAccount;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Long getTransactionId() {
+        return this.transactionId;
+    }
+
+    public User getTransactionUser() {
+        return this.transactionUser;
+    }
+
+    /* Setter */
+
+    private void setAmount(double amount){
+        this.amount = amount;
+    }
+
+    public void setTransactionId(Long id) {
+        this.transactionId = id;
     }
 
     private void setToAccount(Account toAccount){
@@ -48,16 +78,11 @@ public class Transaction {
         this.toAccount = toAccount;
     }
 
-    public double getAmount() {
-        return amount;
-    }
-
-    private void setAmount(double amount){
-        this.amount = amount;
-    }
-
-    public LocalDateTime getTransactionDate() {
-        return transactionDate;
+    private void setFromAccount(Account fromAccount){
+        if(fromAccount == null){
+            throw new RuntimeException("FromAccount is invalid");
+        }
+        this.fromAccount = fromAccount;
     }
 
     public void setTransactionDate(LocalDateTime transactionDate) {
@@ -66,18 +91,6 @@ public class Transaction {
         } else {
             this.transactionDate = java.time.LocalDateTime.now();
         }
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId() {
-        this.transactionId = UUID.randomUUID().toString();
-    }
-
-    public User getTransactionUser() {
-        return transactionUser;
     }
 
     public void setTransactionUser(User transactionUser) {

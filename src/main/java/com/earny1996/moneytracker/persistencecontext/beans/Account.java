@@ -1,16 +1,9 @@
 package com.earny1996.moneytracker.persistencecontext.beans;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "accounts")
@@ -23,6 +16,8 @@ public class Account  extends AbstractBean implements Serializable{
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccountIdGenerator")
+    @SequenceGenerator(name = "AccountIdGenerator", initialValue = 1)
     private Long id;
 
     @Column(name = "name")
@@ -34,7 +29,7 @@ public class Account  extends AbstractBean implements Serializable{
     @Column(name = "currencycode")
     private String currencyCode;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.ALL}, targetEntity = User.class)
+    @OneToOne
     @JoinColumn(name = "fkusers")
     private User user;
 
@@ -53,7 +48,7 @@ public class Account  extends AbstractBean implements Serializable{
         this.setUser(user);
 
         if(id == null){
-            id = generateId();
+           //id = generateId();
         }
 
         this.setId(id);
