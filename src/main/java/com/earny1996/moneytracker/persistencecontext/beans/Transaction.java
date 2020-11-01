@@ -1,16 +1,33 @@
 package com.earny1996.moneytracker.persistencecontext.beans;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Table
 public class Transaction extends AbstractBean{
 
-    private User transactionUser;
-    private Account fromAccount;
-    private Account toAccount;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long transactionId;
+
+    @Column(name = "fkusers")
+    private User transactionUser;
+
+    @Column(name = "fkfromaccounts")
+    private Account fromAccount;
+
+    @Column(name = "fktoaccounts")
+    private Account toAccount;
+
+    @Column(name = "executeddate")
     private LocalDateTime transactionDate;
-    private LocalDateTime createdDate;
+
+    @Column(name = "amount")
     private double amount;
+
+    @Column(name = "createddate")
+    private LocalDateTime createdDate;
 
     /* Constructors */
 
@@ -61,6 +78,10 @@ public class Transaction extends AbstractBean{
         return this.transactionUser;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
     /* Setter */
 
     private void setAmount(double amount){
@@ -98,6 +119,10 @@ public class Transaction extends AbstractBean{
             throw new RuntimeException("Transaction User is invalid.");
         }
         this.transactionUser = transactionUser;
+    }
+
+    protected void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override
