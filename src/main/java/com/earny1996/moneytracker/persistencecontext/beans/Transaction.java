@@ -3,13 +3,20 @@ package com.earny1996.moneytracker.persistencecontext.beans;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Table
+@Entity
+@Table(name = "transactions")
 public class Transaction extends AbstractBean{
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long transactionId;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description", length = 700)
+    private String description;
 
     @Column(name = "fkusers")
     private User transactionUser;
@@ -31,11 +38,11 @@ public class Transaction extends AbstractBean{
 
     /* Constructors */
 
-    public Transaction(User transactionUser, Account from, Account to, double amount){
-        this(transactionUser, from, to, amount, null);
+    public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount){
+        this(transactionTitle, description,transactionUser, from, to, amount, null);
     }
 
-    public Transaction(User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
+    public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
         this.setTransactionUser(transactionUser);
         this.setFromAccount(from);
         this.setToAccount(to);
@@ -43,13 +50,14 @@ public class Transaction extends AbstractBean{
         this.setTransactionDate(transactionDate);
     }
 
-    public Transaction(Long id, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
+    public Transaction(Long id, String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate, LocalDateTime executedDate){
         this.setTransactionId(id);
         this.setTransactionUser(transactionUser);
         this.setFromAccount(from);
         this.setToAccount(to);
         this.setAmount(amount);
         this.setTransactionDate(transactionDate);
+        this.setCreatedDate(executedDate);
     }
 
     /* Getter */
@@ -80,6 +88,14 @@ public class Transaction extends AbstractBean{
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     /* Setter */
@@ -123,6 +139,14 @@ public class Transaction extends AbstractBean{
 
     protected void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

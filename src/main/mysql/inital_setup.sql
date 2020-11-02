@@ -22,11 +22,13 @@ CREATE TABLE `accounts` (
 
 CREATE TABLE `transactions` (
     `id` BIGINT(19) NOT NULL,
+    `title` VARCHAR(150) NOT NULL,
+    `description` MEDIUMTEXT NULL,
     `fkusers` BIGINT(19) NOT NULL,
     `fkfromaccounts` BIGINT(19) NOT NULL,
     `fktoaccounts` BIGINT(19) NOT NULL,
-    `executeddate` DATETIME NOT NULL,
     `amount` DOUBLE NOT NULL,
+    `executeddate` DATETIME NOT NULL,
     `createddate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     KEY `transactions_fkusers` (`fkusers`),

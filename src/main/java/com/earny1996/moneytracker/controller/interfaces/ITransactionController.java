@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public interface ITransactionController {
 
-    void createTransaction(User transactionUser, Account fromAccount, Account toAccount, LocalDateTime executedDate, Double amount);
+    Transaction createTransaction(String title, String description, User transactionUser, Account fromAccount, Account toAccount, LocalDateTime executedDate, Double amount);
 
-    void saveTransaction(Transaction transaction);
+    void saveTransaction(Transaction tr);
 }

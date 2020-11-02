@@ -1,13 +1,18 @@
 package com.earny1996.moneytracker.test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.earny1996.moneytracker.controller.AccountController;
+import com.earny1996.moneytracker.controller.TransactionController;
 import com.earny1996.moneytracker.controller.UserController;
 import com.earny1996.moneytracker.controller.interfaces.IAccountController;
+import com.earny1996.moneytracker.controller.interfaces.ITransactionController;
 import com.earny1996.moneytracker.controller.interfaces.IUserController;
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
+import com.earny1996.moneytracker.persistencecontext.beans.Transaction;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
+import com.earny1996.moneytracker.persistencecontext.daos.interfaces.ITransactionDAO;
 
 public class Main{
 
@@ -15,6 +20,7 @@ public class Main{
     public static void main(String[] args){
         IUserController userController = new UserController();
         IAccountController accountController = new AccountController();
+        ITransactionController transactionController = new TransactionController();
 
         //createData();
 
@@ -23,12 +29,14 @@ public class Main{
         user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
 
         Account kasse = accountController.getAccountsByNameAndUser("Kasse", user).get(0);
+        Account bank = accountController.getAccountsByNameAndUser("Bank", user).get(0);
 
-        accountController.add(kasse, 50);
-        accountController.updateAccount(kasse);
-        System.out.println(user.getAccounts().size());
+        Transaction tr = transactionController.createTransaction("Geld abgehoben", null, user, bank, kasse, LocalDateTime.now(), 150.0);
+
+
         
         user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
+
 
     }
 
