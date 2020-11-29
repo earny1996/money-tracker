@@ -2,15 +2,14 @@ package com.earny1996.moneytracker.persistencecontext.beans;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import javax.persistence.ForeignKey;
 
 @Entity
 @Table(name = "accounts")
@@ -34,8 +33,7 @@ public class Account  extends AbstractBean implements Serializable{
     @Column(name = "currencycode")
     private String currencyCode;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.ALL}, targetEntity = User.class)
-    @JoinColumn(name = "fkusers")
+    @ManyToOne
     private User user;
 
     public Account(){

@@ -5,14 +5,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 public class DataBase {
 
     private static DataBase database;
+    private EntityManagerFactory emf;
 
     private DataBase(){
-
+        emf = createEntityManagerFactoryByUnitName("money");
     }
 
     public static DataBase getInstance(){
@@ -32,14 +32,20 @@ public class DataBase {
      * 
      * @return
      */
-    public static Session getCurrentSession() {
+    public Session getCurrentSession() {
         // JPA and Hibernate SessionFactory example
     
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("money");
         EntityManager entityManager = emf.createEntityManager();
+        
         // Get the Hibernate Session from the EntityManager in JPA
         Session session = entityManager.unwrap(org.hibernate.Session.class);
         
         return session;
+      }
+
+      public EntityManager getEntityManager(){
+        EntityManager em = emf.createEntityManager();
+        return em;
       }
 }

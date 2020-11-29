@@ -1,12 +1,10 @@
 package com.earny1996.moneytracker.persistencecontext.daos.hql;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.transaction.TransactionManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
@@ -27,7 +25,7 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     private static AccountDAO me;
 
     /**
-     * protected Constructor for Singleton use
+     * private Constructor for Singleton use
      */
     private AccountDAO(){
         super();
@@ -51,16 +49,11 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     @Transactional
     public List<Account> getAll() {
-        String query = "SELECT id, name, balance, currencycode, fkusers from accounts;";
+        String query = "SELECT a from Account a";
 
-        Query nativeQuery = entityManager.createNativeQuery(query);
+        TypedQuery<Account> nativeQuery = entityManager.createQuery(query, Account.class);
         
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultList = nativeQuery.getResultList();
-        
-        List<Account> accountList = getAccountByResultList(resultList);
-
-        return accountList;
+        return nativeQuery.getResultList();
     }
 
     /**
@@ -70,8 +63,10 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     @Transactional
     public void persist(Account account) {
+        EntityTransaction et = entityManager.getTransaction();
+        et.begin();
         entityManager.persist(account);
-        dataBase.getCurrentSession().flush();
+        et.commit();
     }
 
     /**
@@ -81,7 +76,10 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     @Transactional
     public void delete(Account account) {
+        EntityTransaction et = entityManager.getTransaction();
+        et.begin();
         entityManager.remove(account);
+        et.commit();
     }
 
     /**
@@ -114,16 +112,13 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
         } catch (Exception e){
             System.out.println(e.getMessage());
             transaction.rollback();
-        } finally {
-             
         }
+        
     }
 
     @Override
     public Account getById(Long accountId) {
-        Account account = entityManager.find(Account.class, accountId);
-         
-        return account;
+        return entityManager.find(Account.class, accountId);
     }
 
     @Override
@@ -133,68 +128,27 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
             session = session.getSessionFactory().openSession();
         }
         // prepare SQL statement
-        String query = "SELECT id, name, balance, currencycode, fkusers FROM accounts WHERE name = :name AND fkusers = :userid";
+        String query = "SELECT a FROM Account a WHERE a.name = :name AND a.user.id = :userid";
 
         // create sql query and add params
         
-        Query nativeQuery = session.createNativeQuery(query);
-        nativeQuery.setParameter("name", accountName);
-        nativeQuery.setParameter("userid", user.getUserId());
+        TypedQuery<Account> typedQuery = session.createQuery(query, Account.class);
+        typedQuery.setParameter("name", accountName);
+        typedQuery.setParameter("userid", user.getUserId());
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultList = nativeQuery.getResultList();
-        session.close();
-        List<Account> accountList = getAccountByResultList(resultList);
-
-        return accountList;
+        return typedQuery.getResultList();
     }
 
     @Override
     public List<Account> getByUserId(Long userId) {
         // prepare SQL statement
-        String query = "SELECT id, name, balance, currencycode, fkusers FROM accounts WHERE fkusers = :userid";
+        String query = "SELECT a FROM Account a WHERE a.user = :userid";
 
         // create sql query and add params
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userid", userId);
+        TypedQuery<Account> typedQuery = entityManager.createQuery(query, Account.class);
+        typedQuery.setParameter("userid", userId);
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultList = nativeQuery.getResultList();
-         
-        List<Account> accountList = getAccountByResultList(resultList);
-
-        return accountList;
-    }
-
-    /**
-     * Helper Method to parse NativeQuery.ResultList to List<Account>
-     * @param
-     *      resultList
-     * @return
-     *      List<Account>
-     */
-    private List<Account> getAccountByResultList(List<Object[]> resultList){
-        List<Account> accountList = new ArrayList<>();
-        for(Object[] objects : resultList){
-            BigInteger id = (BigInteger) objects[0];
-            String name = (String) objects[1];
-            double balance = (double) objects[2];
-            String currencyCode = (String) objects[3];
-            BigInteger userId = (BigInteger) objects[4];
-            
-            User user = null;
-            if(userId != null){
-                UserDAO userDAO = UserDAO.getInstance();
-                user = userDAO.getById(userId.longValue());
-            }
-            
-            Account account = new Account(id.longValue(), name, balance, currencyCode, user);
-            if(user != null){
-                user.addAccount(account);
-            }
-            accountList.add(account);
-        }
-        return accountList;
+        return typedQuery.getResultList();
     }
 
     @Override

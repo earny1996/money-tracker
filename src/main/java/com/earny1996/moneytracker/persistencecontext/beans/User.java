@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -40,7 +39,7 @@ public class User extends AbstractBean implements Serializable{
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy="user", cascade={CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="user", cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<Account>();
 
     public User(){

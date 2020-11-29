@@ -9,12 +9,20 @@ CREATE TABLE `users` (
     PRIMARY KEY (`id`), UNIQUE (`email`)
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+
 CREATE TABLE `accounts` (
-    `id` BIGINT(19) NOT NULL,
-    `name` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-    `currencycode` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-    `balance` DOUBLE NOT NULL, PRIMARY KEY (`id`),
-    `fkusers` BIGINT(19) NOT NULL,
-    KEY `fkusers` (`fkusers`),
-    CONSTRAINT `accounts_users` FOREIGN KEY (`fkusers`) REFERENCES `users` (`id`)
-) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+  `id` bigint(19) NOT NULL,
+  `name` varchar(75) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `currencycode` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `balance` double NOT NULL,
+  `user_id` bigint(20) NOT NULL
+) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+  alter table accounts
+       add constraint FKnjuop33mo69pd79ctplkck40n
+       foreign key (user_id)
+       references users (id)
