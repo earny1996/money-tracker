@@ -1,44 +1,111 @@
 package com.earny1996.moneytracker.persistencecontext.beans;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-public class Transaction {
+@Entity
+@Table(name = "transactions")
+public class Transaction extends AbstractBean{
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long transactionId;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description", length = 700)
+    private String description;
+
+    @Column(name = "fkusers")
     private User transactionUser;
+
+    @Column(name = "fkfromaccounts")
     private Account fromAccount;
+
+    @Column(name = "fktoaccounts")
     private Account toAccount;
-    private String transactionId;
+
+    @Column(name = "executeddate")
     private LocalDateTime transactionDate;
+
+    @Column(name = "amount")
     private double amount;
 
-    public Transaction(User transactionUser, Account from, Account to, double amount){
-        this(transactionUser, from, to, amount, null);
+    @Column(name = "createddate")
+    private LocalDateTime createdDate;
+
+    /* Constructors */
+
+    public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount){
+        this(transactionTitle, description,transactionUser, from, to, amount, null);
     }
 
-    public Transaction(User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
+    public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
         this.setTransactionUser(transactionUser);
         this.setFromAccount(from);
         this.setToAccount(to);
         this.setAmount(amount);
-        this.setTransactionId();
         this.setTransactionDate(transactionDate);
-
     }
+
+    public Transaction(Long id, String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate, LocalDateTime executedDate){
+        this.setTransactionId(id);
+        this.setTransactionUser(transactionUser);
+        this.setFromAccount(from);
+        this.setToAccount(to);
+        this.setAmount(amount);
+        this.setTransactionDate(transactionDate);
+        this.setCreatedDate(executedDate);
+    }
+
+    /* Getter */
 
     public Account getFromAccount() {
         return fromAccount;
     }
 
-    private void setFromAccount(Account fromAccount){
-        if(fromAccount == null){
-            throw new RuntimeException("FromAccount is invalid");
-        }
-        this.fromAccount = fromAccount;
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
     }
 
     public Account getToAccount() {
         return toAccount;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Long getTransactionId() {
+        return this.transactionId;
+    }
+
+    public User getTransactionUser() {
+        return this.transactionUser;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    /* Setter */
+
+    private void setAmount(double amount){
+        this.amount = amount;
+    }
+
+    public void setTransactionId(Long id) {
+        this.transactionId = id;
     }
 
     private void setToAccount(Account toAccount){
@@ -48,16 +115,11 @@ public class Transaction {
         this.toAccount = toAccount;
     }
 
-    public double getAmount() {
-        return amount;
-    }
-
-    private void setAmount(double amount){
-        this.amount = amount;
-    }
-
-    public LocalDateTime getTransactionDate() {
-        return transactionDate;
+    private void setFromAccount(Account fromAccount){
+        if(fromAccount == null){
+            throw new RuntimeException("FromAccount is invalid");
+        }
+        this.fromAccount = fromAccount;
     }
 
     public void setTransactionDate(LocalDateTime transactionDate) {
@@ -68,23 +130,23 @@ public class Transaction {
         }
     }
 
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId() {
-        this.transactionId = UUID.randomUUID().toString();
-    }
-
-    public User getTransactionUser() {
-        return transactionUser;
-    }
-
     public void setTransactionUser(User transactionUser) {
         if(transactionUser == null){
             throw new RuntimeException("Transaction User is invalid.");
         }
         this.transactionUser = transactionUser;
+    }
+
+    protected void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

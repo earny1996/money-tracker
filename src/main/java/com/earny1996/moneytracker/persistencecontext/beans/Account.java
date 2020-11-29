@@ -5,11 +5,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
 @Entity
 @Table(name = "accounts")
@@ -22,6 +23,8 @@ public class Account  extends AbstractBean implements Serializable{
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccountIdGenerator")
+    @SequenceGenerator(name = "AccountIdGenerator", initialValue = 1)
     private Long id;
 
     @Column(name = "name")
@@ -51,7 +54,7 @@ public class Account  extends AbstractBean implements Serializable{
         this.setUser(user);
 
         if(id == null){
-            id = generateId();
+           //id = generateId();
         }
 
         this.setId(id);

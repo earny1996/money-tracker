@@ -3,6 +3,7 @@ package com.earny1996.moneytracker.controller;
 import java.util.List;
 
 import com.earny1996.moneytracker.controller.interfaces.IUserController;
+import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
 import com.earny1996.moneytracker.persistencecontext.daos.hql.UserDAO;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.IUserDAO;
@@ -70,5 +71,10 @@ public class UserController implements IUserController {
     public void changePassword(String password, User user) {
         user.setPassword(password);
     }
-    
+
+    @Override
+    public void addAccount(User user, Account account) {
+        user.addAccount(account);
+    }
+
 }

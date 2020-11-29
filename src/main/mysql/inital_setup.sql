@@ -26,3 +26,22 @@ ALTER TABLE `accounts`
        add constraint FKnjuop33mo69pd79ctplkck40n
        foreign key (user_id)
        references users (id)
+
+CREATE TABLE `transactions` (
+    `id` BIGINT(19) NOT NULL,
+    `title` VARCHAR(150) NOT NULL,
+    `description` MEDIUMTEXT NULL,
+    `fkusers` BIGINT(19) NOT NULL,
+    `fkfromaccounts` BIGINT(19) NOT NULL,
+    `fktoaccounts` BIGINT(19) NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `executeddate` DATETIME NOT NULL,
+    `createddate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `transactions_fkusers` (`fkusers`),
+    CONSTRAINT `transactions_users` FOREIGN KEY (`fkusers`) REFERENCES `users` (`id`),
+    KEY `transactions_fkfromaccounts` (`fkfromaccounts`),
+    CONSTRAINT `transactions_fkfromaccounts` FOREIGN KEY (`fkfromaccounts`) REFERENCES `accounts` (`id`),
+    KEY `transactions_fktoaccounts` (`fktoaccounts`),
+    CONSTRAINT `transactions_fktoaccounts` FOREIGN KEY (`fktoaccounts`) REFERENCES `accounts` (`id`)
+) ENGINE = InnoDB;

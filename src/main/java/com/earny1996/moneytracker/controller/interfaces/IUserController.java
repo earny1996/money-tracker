@@ -2,6 +2,7 @@ package com.earny1996.moneytracker.controller.interfaces;
 
 import java.util.List;
 
+import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
 
 public interface IUserController {
@@ -27,5 +28,7 @@ public interface IUserController {
     public void changeEmail(String email, User user);
 
     public void changePassword(String password, User user);
+
+    public void addAccount(User user, Account account);
     
 }

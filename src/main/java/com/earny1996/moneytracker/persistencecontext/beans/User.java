@@ -10,8 +10,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -29,8 +32,10 @@ public class User extends AbstractBean implements Serializable{
     @Column(name = "lastname")
     private String lastName;
 
-    @Column(name = "id")
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UserIdGenerator")
+    @SequenceGenerator(name = "UserIdGenerator", initialValue = 1)
     private Long userId;
 
     @Column(name = "password")
@@ -51,7 +56,7 @@ public class User extends AbstractBean implements Serializable{
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setPassword(password);
-        this.setUserId(id);
+        //this.setUserId(id);
     }
 
     public User(String firstName, String lastName, String email, String password, boolean encryptPassword) {
@@ -63,7 +68,7 @@ public class User extends AbstractBean implements Serializable{
             password = authenticator.generateHash(password);
         }
         this.setPassword(password);
-        this.setUserId(generateId());
+        //this.setUserId(generateId());
     }
 
     /* Getter */
