@@ -12,7 +12,6 @@ import com.earny1996.moneytracker.controller.interfaces.IUserController;
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.Transaction;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
-import com.earny1996.moneytracker.persistencecontext.daos.interfaces.ITransactionDAO;
 
 public class Main{
 
@@ -22,13 +21,16 @@ public class Main{
         IAccountController accountController = new AccountController();
         ITransactionController transactionController = new TransactionController();
 
+        Menu menu = new Menu();
+        menu.run();
+
         //createData();
 
-        User user = userController.getById(2020930160148801519L);
+        //User user = userController.getById(2020930160148801519L);
         //User newUser = createUser("Gustav", "Gans", "gustav-ganz@entenhausen.de", "duckduckgo");
         //Account accounte = createAccount("Schulden", newUser, 1400.0, "EUR");
 
-        //User user = userController.getById(2020109160226421096L);
+        User user = userController.getById(2020109160226421096L);
 
         user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
 
@@ -40,10 +42,13 @@ public class Main{
         Account bank = accountController.getAccountsByNameAndUser("Bank", user).get(0);
 
         Transaction tr = transactionController.createTransaction("Geld abgehoben", null, user, bank, kasse, LocalDateTime.now(), 150.0);
-
+        System.out.println("Transaction title " + tr.getTitle());
         
         user.getAccounts().stream().forEach(account -> System.out.println(account.toString()));
 
+        List<Transaction> userTransactions = transactionController.getAllUserTransactions(user);
+
+        userTransactions.stream().forEach(userTransaction -> System.out.println(userTransaction.toString()));
 
     }
 
@@ -66,7 +71,7 @@ public class Main{
     private static Account createAccount(String name, User user, Double balance, String currencyCode){
         IAccountController accountController = new AccountController();
         Account account = new Account(name, balance, currencyCode, user);
-        accountController.createAccount(account);
+        accountController.saveAccount(account);
         return account;
     }
 }

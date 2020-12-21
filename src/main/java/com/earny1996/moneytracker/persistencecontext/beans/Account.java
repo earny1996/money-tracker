@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -37,6 +38,7 @@ public class Account  extends AbstractBean implements Serializable{
     private String currencyCode;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Account(){

@@ -50,7 +50,7 @@ public class AccountController implements IAccountController{
     }
 
     @Override
-    public void createAccount(Account account){
+    public void saveAccount(Account account){
         accountDAO.persist(account);
     }
 

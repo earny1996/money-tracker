@@ -8,15 +8,18 @@ import com.earny1996.moneytracker.persistencecontext.beans.User;
 import com.earny1996.moneytracker.persistencecontext.daos.hql.TransactionDAO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TransactionController implements ITransactionController {
     @Override
-    public Transaction createTransaction(String title, String description, User transactionUser, Account fromAccount, Account toAccount, LocalDateTime executedDate, Double amount) {
+    public Transaction createTransaction(String title, String description, User transactionUser, Account fromAccount,
+            Account toAccount, LocalDateTime executedDate, Double amount) {
         // get controller
         IAccountController accountController = new AccountController();
 
         // create transaction
-        Transaction tr = new Transaction(title, description, transactionUser, fromAccount, toAccount, amount, executedDate);
+        Transaction tr = new Transaction(title, description, transactionUser, fromAccount, toAccount, amount,
+                executedDate);
 
         // process accounts
         accountController.subtract(fromAccount, amount);
@@ -34,5 +37,12 @@ public class TransactionController implements ITransactionController {
     public void saveTransaction(Transaction tr) {
         TransactionDAO transactionDAO = TransactionDAO.getInstance();
         transactionDAO.persist(tr);
+    }
+
+    @Override
+    public List<Transaction> getAllUserTransactions(User user) {
+        TransactionDAO transactionDAO = TransactionDAO.getInstance();
+        
+        return transactionDAO.getByUser(user);
     }
 }

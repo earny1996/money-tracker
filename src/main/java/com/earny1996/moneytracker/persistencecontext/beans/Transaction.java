@@ -18,13 +18,16 @@ public class Transaction extends AbstractBean{
     @Column(name = "description", length = 700)
     private String description;
 
-    @Column(name = "fkusers")
+    @OneToOne
+    @JoinColumn(name = "fkusers")
     private User transactionUser;
 
-    @Column(name = "fkfromaccounts")
+    @OneToOne
+    @JoinColumn(name = "fkfromaccounts")
     private Account fromAccount;
 
-    @Column(name = "fktoaccounts")
+    @OneToOne
+    @JoinColumn(name = "fktoaccounts")
     private Account toAccount;
 
     @Column(name = "executeddate")
@@ -37,21 +40,34 @@ public class Transaction extends AbstractBean{
     private LocalDateTime createdDate;
 
     /* Constructors */
+    public Transaction(){
+
+    }
 
     public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount){
         this(transactionTitle, description,transactionUser, from, to, amount, null);
     }
 
     public Transaction(String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate){
+        this.setTitle(transactionTitle);
+        this.setDescription(description);
         this.setTransactionUser(transactionUser);
         this.setFromAccount(from);
         this.setToAccount(to);
         this.setAmount(amount);
+
+        LocalDateTime transactionDatasetCreated = LocalDateTime.now();
+        if(transactionDate == null){
+            transactionDate = transactionDatasetCreated;
+        }
         this.setTransactionDate(transactionDate);
+        this.setCreatedDate(transactionDatasetCreated);
     }
 
     public Transaction(Long id, String transactionTitle, String description, User transactionUser, Account from, Account to, double amount, LocalDateTime transactionDate, LocalDateTime executedDate){
         this.setTransactionId(id);
+        this.setTitle(title);
+        this.setDescription(description);
         this.setTransactionUser(transactionUser);
         this.setFromAccount(from);
         this.setToAccount(to);
@@ -153,13 +169,13 @@ public class Transaction extends AbstractBean{
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Transaction for ");
-        //stringBuilder.append(transactionUser.getFirstName());
+        stringBuilder.append(transactionUser.getFirstName());
         stringBuilder.append(":");
         stringBuilder.append("\n");
         stringBuilder.append(fromAccount.getName());
         stringBuilder.append(" ");
         stringBuilder.append(this.amount);
-       // stringBuilder.append(fromAccount.getCurrency().getSymbol());
+        //stringBuilder.append(fromAccount.getCurrency().getSymbol());
         stringBuilder.append(" an ");
         stringBuilder.append(toAccount.getName());
         stringBuilder.append(" ");

@@ -17,7 +17,7 @@ public interface IAccountController {
 
     public List<Account> getAllAccounts();
 
-    public void createAccount(Account account);
+    public void saveAccount(Account account);
 
     public void updateAccount(Account account);
 

@@ -142,7 +142,7 @@ public class AccountDAO extends AbstractDAO<Account> implements IAccountDAO {
     @Override
     public List<Account> getByUserId(Long userId) {
         // prepare SQL statement
-        String query = "SELECT a FROM Account a WHERE a.user = :userid";
+        String query = "SELECT a FROM Account a WHERE a.user.id = :userid";
 
         // create sql query and add params
         TypedQuery<Account> typedQuery = entityManager.createQuery(query, Account.class);

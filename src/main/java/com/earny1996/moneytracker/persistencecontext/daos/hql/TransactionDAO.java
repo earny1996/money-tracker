@@ -1,17 +1,14 @@
 package com.earny1996.moneytracker.persistencecontext.daos.hql;
 
-import com.earny1996.moneytracker.controller.AccountController;
 import com.earny1996.moneytracker.persistencecontext.beans.Account;
 import com.earny1996.moneytracker.persistencecontext.beans.Transaction;
 import com.earny1996.moneytracker.persistencecontext.beans.User;
-import com.earny1996.moneytracker.persistencecontext.daos.database.DataBase;
 import com.earny1996.moneytracker.persistencecontext.daos.interfaces.ITransactionDAO;
-import org.hibernate.Session;
-
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 public class TransactionDAO extends AbstractDAO<Transaction> implements ITransactionDAO {
 
@@ -27,44 +24,72 @@ public class TransactionDAO extends AbstractDAO<Transaction> implements ITransac
 
     @Override
     public List<Transaction> getByUser(User user) {
-        return null;
+        String queryString = "SELECT t from Transaction t WHERE t.transactionUser.id = :userId";
+        TypedQuery<Transaction> typedQuery = entityManager.createQuery(queryString, Transaction.class);
+        typedQuery.setParameter("userId", user.getUserId());
+
+        return typedQuery.getResultList();
     }
 
     @Override
     public List<Transaction> getByAccount(Account account) {
-        return null;
+        String queryString = "SELECT t from Transaction t WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId";
+        TypedQuery<Transaction> typedQuery = entityManager.createQuery(queryString, Transaction.class);
+        typedQuery.setParameter("accountId", account.getId());
+
+        return typedQuery.getResultList();
     }
 
     @Override
     public Transaction getById(Long id) {
-        return null;
+        String queryString = "SELECT t from Transaction t WHERE id = :id";
+        TypedQuery<Transaction> typedQuery = entityManager.createQuery(queryString, Transaction.class);
+        typedQuery.setParameter("id", id);
+
+        return typedQuery.getSingleResult();
     }
 
     @Override
     public List<Transaction> getAll() {
-        return null;
+
+        String queryString = "SELECT t from Transaction t";
+        TypedQuery<Transaction> typedQuery = entityManager.createQuery(queryString, Transaction.class);
+
+        return typedQuery.getResultList();
     }
 
     @Override
     public void delete(Transaction transaction) {
-
+        EntityTransaction et = entityManager.getTransaction();
+        et.begin();
+        entityManager.remove(transaction);
+        et.commit();
     }
 
     @Override
     public void deleteById(Long id) {
+        EntityTransaction et = entityManager.getTransaction();
+
+        String queryString = "DELETE FROM transactions WHERE id = :id";
+        Query query = entityManager.createNativeQuery(queryString);
+        query.setParameter("id", id);
+
+        et.begin();
+        try{
+            query.executeUpdate();
+            et.commit();
+        } catch(Exception e){
+            et.rollback();
+        }
 
     }
 
     @Override
     public void persist(Transaction transaction) {
-        Session currentSession = DataBase.getCurrentSession();
-        if(!currentSession.isOpen()){
-            currentSession = dataBase.getCurrentSession().getSessionFactory().openSession();
-        }
-        org.hibernate.Transaction tr = currentSession.getTransaction();
-        currentSession.beginTransaction();
-        currentSession.persist(transaction);
-        tr.commit();
+        EntityTransaction et = entityManager.getTransaction();
+        et.begin();
+        entityManager.persist(transaction);
+        et.commit();
     }
 
     @Override
@@ -72,48 +97,5 @@ public class TransactionDAO extends AbstractDAO<Transaction> implements ITransac
 
     }
 
-    /**
-     * Helper Method to parse NativeQuery.ResultList to List<Account>
-     * @param
-     *      resultList
-     * @return
-     *      List<Account>
-     */
-    private List<Transaction> getAccountByResultList(List<Object[]> resultList){
-        List<Transaction> transactionsList = new ArrayList<>();
-        for(Object[] objects : resultList){
-            BigInteger id = (BigInteger) objects[0];
-            String title = (String) objects[1];
-            String description = (String) objects[2];
-            BigInteger userId = (BigInteger) objects[3];
-            BigInteger accountFromId = (BigInteger) objects[4];
-            BigInteger accountToId = (BigInteger) objects[5];
-            Double amount = (Double) objects[6];
-            LocalDateTime executedDate = (LocalDateTime) objects[7];
-            LocalDateTime createdDate = (LocalDateTime) objects[8];
-
-            User user = null;
-            if(userId != null){
-                UserDAO userDAO = UserDAO.getInstance();
-                user = userDAO.getById(userId.longValue());
-            } else {
-                throw new RuntimeException("No User");
-            }
-
-            Account fromAccount;
-            Account toAccount;
-            if(accountFromId != null && accountToId != null){
-                AccountDAO accountDAO = AccountDAO.getInstance();
-                fromAccount = accountDAO.getById(accountFromId.longValue());
-                toAccount = accountDAO.getById(accountToId.longValue());
-            } else {
-                throw new RuntimeException("Accounts are null");
-            }
-
-            Transaction transaction = new Transaction(id.longValue(), title, description, user, fromAccount, toAccount, amount.doubleValue(), createdDate, executedDate);
-
-            transactionsList.add(transaction);
-        }
-        return transactionsList;
-    }
+    
 }
